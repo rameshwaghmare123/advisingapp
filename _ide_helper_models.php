@@ -463,6 +463,7 @@ namespace App\Models{
  * @property string|null $multifactor_secret
  * @property-read string|null $multifactor_recovery_codes
  * @property string|null $multifactor_confirmed_at
+ * @property bool $is_branding_bar_dismissed
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Ai\Models\AiAssistantUpvote> $aiAssistantUpvotes
  * @property-read int|null $ai_assistant_upvotes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Ai\Models\AiThreadFolder> $aiThreadFolders
@@ -552,6 +553,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHasEnabledPublicProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsBioVisibleOnProfile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsBrandingBarDismissed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsDivisionVisibleOnProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsEmailVisibleOnProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsExternal($value)
@@ -2503,6 +2505,7 @@ namespace AdvisingApp\Interaction\Models{
  * @property-read \AdvisingApp\Interaction\Models\InteractionOutcome|null $outcome
  * @property-read \AdvisingApp\Interaction\Models\InteractionRelation|null $relation
  * @property-read \AdvisingApp\Interaction\Models\InteractionStatus|null $status
+ * @property-read \AdvisingApp\Timeline\Models\Timeline|null $timelineRecord
  * @property-read \AdvisingApp\Interaction\Models\InteractionType|null $type
  * @property-read \App\Models\User|null $user
  * @method static \AdvisingApp\Interaction\Database\Factories\InteractionFactory factory($count = null, $state = [])
@@ -3776,6 +3779,8 @@ namespace AdvisingApp\Prospect\Models{
  * @property-read int|null $ordered_engagement_responses_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Engagement\Models\Engagement> $orderedEngagements
  * @property-read int|null $ordered_engagements_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Interaction\Models\Interaction> $orderedInteractions
+ * @property-read int|null $ordered_interactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\ServiceManagement\Models\ServiceRequest> $serviceRequests
  * @property-read int|null $service_requests_count
  * @property-read \AdvisingApp\Prospect\Models\ProspectSource $source
@@ -3877,6 +3882,7 @@ namespace AdvisingApp\Prospect\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int $sort
+ * @property bool $is_system_protected
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Audit\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Prospect\Models\Prospect> $prospects
@@ -3891,6 +3897,7 @@ namespace AdvisingApp\Prospect\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereIsSystemProtected($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProspectStatus whereUpdatedAt($value)
@@ -4252,6 +4259,8 @@ namespace AdvisingApp\ServiceManagement\Models{
  * @property-read int|null $interactions_count
  * @property-read \AdvisingApp\ServiceManagement\Models\ServiceRequestUpdate|null $latestInboundServiceRequestUpdate
  * @property-read \AdvisingApp\ServiceManagement\Models\ServiceRequestUpdate|null $latestOutboundServiceRequestUpdate
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Interaction\Models\Interaction> $orderedInteractions
+ * @property-read int|null $ordered_interactions_count
  * @property-read \AdvisingApp\ServiceManagement\Models\ServiceRequestPriority|null $priority
  * @property-read \AdvisingApp\ServiceManagement\Models\ServiceRequestFormSubmission|null $serviceRequestFormSubmission
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\ServiceManagement\Models\ServiceRequestUpdate> $serviceRequestUpdates
@@ -4758,19 +4767,12 @@ namespace AdvisingApp\StudentDataModel\Models{
  * AdvisingApp\StudentDataModel\Models\Enrollment
  *
  * @property string $sisid
- * @property string $acad_career
- * @property string $division
- * @property string $semester
- * @property string $class_nbr
- * @property string $subject
- * @property string $catalog_nbr
- * @property string $enrl_status_reason
- * @property string $enrl_add_dt
- * @property string $enrl_drop_dt
- * @property string $crse_grade_off
- * @property int $unt_taken
- * @property int $unt_earned
- * @property \Illuminate\Support\Carbon $last_upd_dt_stmp
+ * @property string|null $division
+ * @property string|null $class_nbr
+ * @property string|null $crse_grade_off
+ * @property int|null $unt_taken
+ * @property int|null $unt_earned
+ * @property \Illuminate\Support\Carbon|null $last_upd_dt_stmp
  * @property string|null $section
  * @property string|null $name
  * @property string|null $department
@@ -4785,66 +4787,26 @@ namespace AdvisingApp\StudentDataModel\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment query()
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereAcadCareer($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereCatalogNbr($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereClassNbr($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereCrseGradeOff($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereDepartment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereDivision($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereEndDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereEnrlAddDt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereEnrlDropDt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereEnrlStatusReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereFacultyEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereFacultyName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereLastUpdDtStmp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereSection($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereSemester($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereSemesterCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereSemesterName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereSisid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereStartDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereSubject($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereUntEarned($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Enrollment whereUntTaken($value)
  * @mixin \Eloquent
  */
 	#[\AllowDynamicProperties]
 	class IdeHelperEnrollment {}
-}
-
-namespace AdvisingApp\StudentDataModel\Models{
-/**
- * AdvisingApp\StudentDataModel\Models\Performance
- *
- * @property string $sisid
- * @property string $acad_career
- * @property string $division
- * @property bool $first_gen
- * @property int $cum_att
- * @property int $cum_ern
- * @property int $pct_ern
- * @property float $cum_gpa
- * @property \Illuminate\Support\Carbon $max_dt
- * @property-read \AdvisingApp\StudentDataModel\Models\Student|null $student
- * @method static \AdvisingApp\StudentDataModel\Database\Factories\PerformanceFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Performance newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Performance newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Performance query()
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereAcadCareer($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereCumAtt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereCumErn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereCumGpa($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereDivision($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereFirstGen($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereMaxDt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance wherePctErn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Performance whereSisid($value)
- * @mixin \Eloquent
- */
-	#[\AllowDynamicProperties]
-	class IdeHelperPerformance {}
 }
 
 namespace AdvisingApp\StudentDataModel\Models{
@@ -4959,8 +4921,8 @@ namespace AdvisingApp\StudentDataModel\Models{
  * @property-read int|null $ordered_engagement_responses_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Engagement\Models\Engagement> $orderedEngagements
  * @property-read int|null $ordered_engagements_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\StudentDataModel\Models\Performance> $performances
- * @property-read int|null $performances_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Interaction\Models\Interaction> $orderedInteractions
+ * @property-read int|null $ordered_interactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\StudentDataModel\Models\Program> $programs
  * @property-read int|null $programs_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \AdvisingApp\Prospect\Models\Prospect> $prospects
